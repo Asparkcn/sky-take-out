@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.DishFlavorMapper">
+    <insert id="insertBatch" parameterType="list">
+        insert into dish_flavor (id, dish_id, name, value) VALUES
+        <foreach collection="dishFlavors" item="dishFlavor" separator=",">
+            (#{dishFlavor.id}, #{dishFlavor.dishId}, #{dishFlavor.name}, #{dishFlavor.value})
+        </foreach>
+    </insert>
+    <select id="getByDishId" resultType="com.sky.entity.DishFlavor">
+        select id, dish_id, name, value
+        from dish_flavor
+        where dish_id = #{id}
+    </select>
+</mapper>

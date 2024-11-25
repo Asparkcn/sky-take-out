@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.OrderMapper">
+    <select id="getTurnoverList" resultType="java.lang.Double">
+        with recursive date_series as (
+            select date(#{begin}) as n
+            union all
+            select date_add(n, interval 1 day)
+            from date_series
+            where n &lt; date(#{end})
+        )
+        select coalesce(sum(amount), 0) as amount
+        from orders
+        right join date_series on date(order_time) = n
+        and date(order_time) between #{begin} and #{end}
+        group by n
+        order by n
+    </select>
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.UserMapper">
+    <select id="getNewUserStatistics" resultType="java.lang.Integer">
+        with recursive date_series as (
+            select #{begin} as n
+            union all
+            select date_add(n, interval 1 day)
+            from date_series
+            where n &lt; #{end}
+        )
+        select ifnull(count(user.id), 0.0)
+        from date_series
+        left join user on n = date(user.create_time)
+        and date(user.create_time) between #{begin} and #{end}
+        group by n
+        order by n
+    </select>
+    <select id="getTotalUserStatistics" resultType="java.lang.Integer">
+        with recursive date_series as (
+            select #{begin} as n
+            union all
+            select date_add(n, interval 1 day)
+            from date_series
+            where n &lt; #{end}
+        )
+        select ifnull(count(distinct user.id), 0)
+        from date_series
+        left join user on date(user.create_time) &lt;= n
+        group by n
+        order by n
+    </select>
+</mapper>

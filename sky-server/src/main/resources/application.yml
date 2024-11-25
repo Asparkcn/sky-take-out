@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  datasource:
+    driver-class-name: ${sky.datasource.driver-class-name}
+    url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${sky.datasource.username}
+    password: ${sky.datasource.password}
+  redis:
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+    password: ${sky.redis.password}
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.sky.entity
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com:
+      sky:
+        mapper: debug
+        service: debug
+        controller: debug
+
+sky:
+  jwt:
+    admin-secret-key: ${sky.jwt.admin-secret-key}
+    admin-ttl: ${sky.jwt.admin-ttl}
+    admin-token-name: ${sky.jwt.admin-token-name}
+    user-secret-key: ${sky.jwt.user-secret-key}
+    user-ttl: ${sky.jwt.user-ttl}
+    user-token-name: ${sky.jwt.user-token-name}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
+  oss:
+    type: duoji
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
+  duojioss:
+    endpoint: ${sky.duojioss.endpoint}
+    access-key-id: ${sky.duojioss.access-key-id}
+    access-key-secret: ${sky.duojioss.access-key-secret}
+    domain: ${sky.duojioss.domain}

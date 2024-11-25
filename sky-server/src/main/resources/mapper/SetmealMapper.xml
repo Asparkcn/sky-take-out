@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealMapper">
+    <delete id="deleteByDishIds">
+        delete setmeal, setmeal_dish
+        from setmeal
+        left join setmeal_dish on setmeal.id = setmeal_dish.setmeal_id
+        where setmeal_dish.dish_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="list" parameterType="Setmeal" resultType="Setmeal">
+        select * from setmeal
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+    <select id="pageWithCategoryName" resultType="com.sky.vo.SetmealVO">
+        select s.id, s.category_id, s.name, s.price, s.status, s.description, s.image, s.update_time, c.name category_name
+        from setmeal s
+        left join category c on s.category_id = c.id
+        <where>
+            <if test="query.categoryId != null">
+                and s.category_id #{query.categoryId}
+            </if>
+            <if test="query.name != null">
+                and s.name = #{query.name}
+            </if>
+            <if test="query.status != null">
+                and s.status = #{query.status}
+            </if>
+        </where>
+    </select>
+    <select id="selectSetmealIdsByDishIds" resultType="java.lang.Long">
+        select setmeal.id
+        from setmeal
+        left join setmeal_dish on setmeal.id = setmeal_dish.setmeal_id
+        where setmeal_dish.dish_id in 
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>
